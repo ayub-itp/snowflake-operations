@@ -1,7 +1,8 @@
 snowflake:
+  organization: ${SNOWFLAKE_ORG_DEV}
   account: ${SNOWFLAKE_ACCOUNT_DEV}
   user: ${SNOWFLAKE_USER_DEV}
   role: ${SNOWFLAKE_ROLE_DEV}
-  warehouse: ${SNOWFLAKE_WAREHOUSE_DEV}
+  authenticator: ${SNOWFLAKE_AUTHENTICATOR_DEV}
   private_key: ${SNOWFLAKE_PRIVATE_KEY_DEV}
 changes_path: changes/dev/

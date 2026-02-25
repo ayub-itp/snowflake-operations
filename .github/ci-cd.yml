@@ -22,20 +22,23 @@ jobs:
       - name: Apply Snowflake changes
         run: snowflakechange apply --config environments/${{ github.ref_name }}.yml
         env:
+          SNOWFLAKE_ORG_DEV: ${{ secrets.SNOWFLAKE_ORG_DEV }}
           SNOWFLAKE_ACCOUNT_DEV: ${{ secrets.SNOWFLAKE_ACCOUNT_DEV }}
           SNOWFLAKE_USER_DEV: ${{ secrets.SNOWFLAKE_USER_DEV }}
           SNOWFLAKE_ROLE_DEV: ${{ secrets.SNOWFLAKE_ROLE_DEV }}
-          SNOWFLAKE_WAREHOUSE_DEV: ${{ secrets.SNOWFLAKE_WAREHOUSE_DEV }}
+          SNOWFLAKE_AUTHENTICATOR_DEV: ${{ secrets.SNOWFLAKE_AUTHENTICATOR_DEV }}
           SNOWFLAKE_PRIVATE_KEY_DEV: ${{ secrets.SNOWFLAKE_PRIVATE_KEY_DEV }}
+          SNOWFLAKE_ORG_QA: ${{ secrets.SNOWFLAKE_ORG_QA }}
           SNOWFLAKE_ACCOUNT_QA: ${{ secrets.SNOWFLAKE_ACCOUNT_QA }}
           SNOWFLAKE_USER_QA: ${{ secrets.SNOWFLAKE_USER_QA }}
           SNOWFLAKE_ROLE_QA: ${{ secrets.SNOWFLAKE_ROLE_QA }}
-          SNOWFLAKE_WAREHOUSE_QA: ${{ secrets.SNOWFLAKE_WAREHOUSE_QA }}
+          SNOWFLAKE_AUTHENTICATOR_QA: ${{ secrets.SNOWFLAKE_AUTHENTICATOR_QA }}
           SNOWFLAKE_PRIVATE_KEY_QA: ${{ secrets.SNOWFLAKE_PRIVATE_KEY_QA }}
+          SNOWFLAKE_ORG_PROD: ${{ secrets.SNOWFLAKE_ORG_PROD }}
           SNOWFLAKE_ACCOUNT_PROD: ${{ secrets.SNOWFLAKE_ACCOUNT_PROD }}
           SNOWFLAKE_USER_PROD: ${{ secrets.SNOWFLAKE_USER_PROD }}
           SNOWFLAKE_ROLE_PROD: ${{ secrets.SNOWFLAKE_ROLE_PROD }}
-          SNOWFLAKE_WAREHOUSE_PROD: ${{ secrets.SNOWFLAKE_WAREHOUSE_PROD }}
+          SNOWFLAKE_AUTHENTICATOR_PROD: ${{ secrets.SNOWFLAKE_AUTHENTICATOR_PROD }}
           SNOWFLAKE_PRIVATE_KEY_PROD: ${{ secrets.SNOWFLAKE_PRIVATE_KEY_PROD }}
 
       - name: Log migration history

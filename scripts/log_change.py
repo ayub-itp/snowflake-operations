@@ -4,10 +4,11 @@ import snowflake.connector
 
 def log_change(env, change_file, status="SUCCESS", error_message=None):
     conn = snowflake.connector.connect(
+        organization=os.getenv(f"SNOWFLAKE_ORG_{env.upper()}"),
         account=os.getenv(f"SNOWFLAKE_ACCOUNT_{env.upper()}"),
         user=os.getenv(f"SNOWFLAKE_USER_{env.upper()}"),
         role=os.getenv(f"SNOWFLAKE_ROLE_{env.upper()}"),
-        warehouse=os.getenv(f"SNOWFLAKE_WAREHOUSE_{env.upper()}"),
+        authenticator=os.getenv(f"SNOWFLAKE_AUTHENTICATOR_{env.upper()}"),
         private_key=os.getenv(f"SNOWFLAKE_PRIVATE_KEY_{env.upper()}")
     )
     cursor = conn.cursor()

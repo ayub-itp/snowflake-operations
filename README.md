@@ -9,6 +9,14 @@ This repo automates Snowflake schema changes across DEV, QA, and PROD using [sno
 - `scripts/log_change.py` → Logs applied migrations into `schema_change_history`
 - `.github/workflows/ci-cd.yml` → GitHub Actions pipeline
 
+## Required Secrets
+- SNOWFLAKE_ORG_DEV / QA / PROD
+- SNOWFLAKE_ACCOUNT_DEV / QA / PROD
+- SNOWFLAKE_USER_DEV / QA / PROD
+- SNOWFLAKE_ROLE_DEV / QA / PROD
+- SNOWFLAKE_AUTHENTICATOR_DEV / QA / PROD
+- SNOWFLAKE_PRIVATE_KEY_DEV / QA / PROD
+
 ## Flow
 1. Push to `dev` → applies DEV migrations.
 2. Push to `qa` → applies QA migrations.
