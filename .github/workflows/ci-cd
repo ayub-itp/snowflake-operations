@@ -1,0 +1,48 @@
+name: Snowflake Multi-Env CI/CD
+
+on:
+  push:
+    branches:
+      - dev
+      - qa
+      - main
+
+jobs:
+  apply-changes:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - run: pip install -r requirements.txt
+
+      - name: Apply Snowflake changes
+        run: snowflakechange apply --config environments/${{ github.ref_name }}.yml
+        env:
+          SNOWFLAKE_ORG_DEV: ${{ secrets.SNOWFLAKE_ORG_DEV }}
+          SNOWFLAKE_ACCOUNT_DEV: ${{ secrets.SNOWFLAKE_ACCOUNT_DEV }}
+          SNOWFLAKE_USER_DEV: ${{ secrets.SNOWFLAKE_USER_DEV }}
+          SNOWFLAKE_ROLE_DEV: ${{ secrets.SNOWFLAKE_ROLE_DEV }}
+          SNOWFLAKE_AUTHENTICATOR_DEV: ${{ secrets.SNOWFLAKE_AUTHENTICATOR_DEV }}
+          SNOWFLAKE_PRIVATE_KEY_DEV: ${{ secrets.SNOWFLAKE_PRIVATE_KEY_DEV }}
+          SNOWFLAKE_ORG_QA: ${{ secrets.SNOWFLAKE_ORG_QA }}
+          SNOWFLAKE_ACCOUNT_QA: ${{ secrets.SNOWFLAKE_ACCOUNT_QA }}
+          SNOWFLAKE_USER_QA: ${{ secrets.SNOWFLAKE_USER_QA }}
+          SNOWFLAKE_ROLE_QA: ${{ secrets.SNOWFLAKE_ROLE_QA }}
+          SNOWFLAKE_AUTHENTICATOR_QA: ${{ secrets.SNOWFLAKE_AUTHENTICATOR_QA }}
+          SNOWFLAKE_PRIVATE_KEY_QA: ${{ secrets.SNOWFLAKE_PRIVATE_KEY_QA }}
+          SNOWFLAKE_ORG_PROD: ${{ secrets.SNOWFLAKE_ORG_PROD }}
+          SNOWFLAKE_ACCOUNT_PROD: ${{ secrets.SNOWFLAKE_ACCOUNT_PROD }}
+          SNOWFLAKE_USER_PROD: ${{ secrets.SNOWFLAKE_USER_PROD }}
+          SNOWFLAKE_ROLE_PROD: ${{ secrets.SNOWFLAKE_ROLE_PROD }}
+          SNOWFLAKE_AUTHENTICATOR_PROD: ${{ secrets.SNOWFLAKE_AUTHENTICATOR_PROD }}
+          SNOWFLAKE_PRIVATE_KEY_PROD: ${{ secrets.SNOWFLAKE_PRIVATE_KEY_PROD }}
+
+      - name: Log migration history
+        run: |
+          for file in $(ls changes/${{ github.ref_name }}/*.sql); do
+            python scripts/log_change.py ${{ github.ref_name }} $file SUCCESS
+          done
