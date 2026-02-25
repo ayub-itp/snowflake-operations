@@ -10,6 +10,10 @@ on:
 jobs:
   apply-changes:
     runs-on: ubuntu-latest
+
+    # Dynamically set environment based on branch
+    environment: ${{ github.ref_name }}
+
     steps:
       - uses: actions/checkout@v3
 
@@ -22,7 +26,7 @@ jobs:
       - name: Apply SQL migrations
         run: python scripts/log_change.py ${{ github.ref_name }}
         env:
-          # DEV secrets
+          # These will now be pulled from the environment secrets
           SNOWFLAKE_ORG_DEV: ${{ secrets.SNOWFLAKE_ORG_DEV }}
           SNOWFLAKE_ACCOUNT_DEV: ${{ secrets.SNOWFLAKE_ACCOUNT_DEV }}
           SNOWFLAKE_USER_DEV: ${{ secrets.SNOWFLAKE_USER_DEV }}
@@ -30,7 +34,6 @@ jobs:
           SNOWFLAKE_AUTHENTICATOR_DEV: ${{ secrets.SNOWFLAKE_AUTHENTICATOR_DEV }}
           SNOWFLAKE_PRIVATE_KEY_DEV: ${{ secrets.SNOWFLAKE_PRIVATE_KEY_DEV }}
 
-          # QA secrets
           SNOWFLAKE_ORG_QA: ${{ secrets.SNOWFLAKE_ORG_QA }}
           SNOWFLAKE_ACCOUNT_QA: ${{ secrets.SNOWFLAKE_ACCOUNT_QA }}
           SNOWFLAKE_USER_QA: ${{ secrets.SNOWFLAKE_USER_QA }}
@@ -38,7 +41,6 @@ jobs:
           SNOWFLAKE_AUTHENTICATOR_QA: ${{ secrets.SNOWFLAKE_AUTHENTICATOR_QA }}
           SNOWFLAKE_PRIVATE_KEY_QA: ${{ secrets.SNOWFLAKE_PRIVATE_KEY_QA }}
 
-          # PROD secrets
           SNOWFLAKE_ORG_PROD: ${{ secrets.SNOWFLAKE_ORG_PROD }}
           SNOWFLAKE_ACCOUNT_PROD: ${{ secrets.SNOWFLAKE_ACCOUNT_PROD }}
           SNOWFLAKE_USER_PROD: ${{ secrets.SNOWFLAKE_USER_PROD }}
