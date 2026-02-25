@@ -2,21 +2,19 @@ import os
 import sys
 import snowflake.connector
 
-def debug_env(env):
-    """Print out the key environment variables for debugging."""
+def debug_env(env_key):
     keys = [
-        f"SNOWFLAKE_ORG_{env.upper()}",
-        f"SNOWFLAKE_ACCOUNT_{env.upper()}",
-        f"SNOWFLAKE_USER_{env.upper()}",
-        f"SNOWFLAKE_ROLE_{env.upper()}",
-        f"SNOWFLAKE_AUTHENTICATOR_{env.upper()}",
-        f"SNOWFLAKE_PRIVATE_KEY_{env.upper()}"
+        f"SNOWFLAKE_ORG_{env_key}",
+        f"SNOWFLAKE_ACCOUNT_{env_key}",
+        f"SNOWFLAKE_USER_{env_key}",
+        f"SNOWFLAKE_ROLE_{env_key}",
+        f"SNOWFLAKE_AUTHENTICATOR_{env_key}",
+        f"SNOWFLAKE_PRIVATE_KEY_{env_key}"
     ]
     print("=== Debugging Environment Variables ===")
     for k in keys:
         v = os.getenv(k)
         if v:
-            # Mask sensitive values like private key
             masked = v if "PRIVATE_KEY" not in k else "[PRIVATE_KEY_SET]"
             print(f"{k}: {masked}")
         else:
@@ -44,31 +42,35 @@ def run_sql_file(conn, env, file_path):
         cursor.close()
 
 if __name__ == "__main__":
-    env = sys.argv[1]
+    env = sys.argv[1].lower()
+    env_map = {"dev": "DEV", "qa": "QA", "prod": "PROD"}
+    env_key = env_map.get(env)
+
+    if not env_key:
+        print(f"❌ Unknown environment: {env}")
+        sys.exit(1)
+
     changes_dir = f"changes/{env}/"
 
-    # Debug print environment variables
-    debug_env(env)
+    debug_env(env_key)
 
-    # Attempt connection
     try:
         conn = snowflake.connector.connect(
-            organization=os.getenv(f"SNOWFLAKE_ORG_{env.upper()}"),
-            account=os.getenv(f"SNOWFLAKE_ACCOUNT_{env.upper()}"),
-            user=os.getenv(f"SNOWFLAKE_USER_{env.upper()}"),
-            role=os.getenv(f"SNOWFLAKE_ROLE_{env.upper()}"),
-            authenticator=os.getenv(f"SNOWFLAKE_AUTHENTICATOR_{env.upper()}"),
-            private_key=os.getenv(f"SNOWFLAKE_PRIVATE_KEY_{env.upper()}")
+            organization=os.getenv(f"SNOWFLAKE_ORG_{env_key}"),
+            account=os.getenv(f"SNOWFLAKE_ACCOUNT_{env_key}"),
+            user=os.getenv(f"SNOWFLAKE_USER_{env_key}"),
+            role=os.getenv(f"SNOWFLAKE_ROLE_{env_key}"),
+            authenticator=os.getenv(f"SNOWFLAKE_AUTHENTICATOR_{env_key}"),
+            private_key=os.getenv(f"SNOWFLAKE_PRIVATE_KEY_{env_key}")
         )
         print("✅ Connection established successfully.")
     except Exception as e:
         print(f"❌ Connection failed: {e}")
         sys.exit(1)
 
-    # Apply SQL files
     for file in sorted(os.listdir(changes_dir)):
         if file.endswith(".sql"):
-            run_sql_file(conn, env, os.path.join(changes_dir, file))
+            run_sql_file(conn, env_key, os.path.join(changes_dir, file))
 
     conn.close()
     print("✅ All migrations applied and logged.")
