@@ -1,12 +1,12 @@
 # Snowflake Change Management with GitHub Actions
 
-This repo automates Snowflake schema changes across DEV, QA, and PROD using [snowflakechange](https://pypi.org/project/snowflakechange/).
+This repo automates Snowflake schema changes across DEV, QA, and PROD using GitHub Actions and `snowflake-connector-python`.
 
 ## Structure
 - `changes/dev|qa|prod/` → Environment-specific SQL migrations
 - `environments/*.yml` → Configs for each environment
 - `migrations/000_create_history_table.sql` → Bootstrap history table
-- `scripts/log_change.py` → Logs applied migrations into `schema_change_history`
+- `scripts/log_change.py` → Applies migrations and logs them into `schema_change_history`
 - `.github/workflows/ci-cd.yml` → GitHub Actions pipeline
 
 ## Required Secrets

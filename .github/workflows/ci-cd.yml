@@ -19,8 +19,8 @@ jobs:
 
       - run: pip install -r requirements.txt
 
-      - name: Apply Snowflake changes
-        run: snowflakechange apply --config environments/${{ github.ref_name }}.yml
+      - name: Apply SQL migrations
+        run: python scripts/log_change.py ${{ github.ref_name }}
         env:
           SNOWFLAKE_ORG_DEV: ${{ secrets.SNOWFLAKE_ORG_DEV }}
           SNOWFLAKE_ACCOUNT_DEV: ${{ secrets.SNOWFLAKE_ACCOUNT_DEV }}
@@ -40,9 +40,3 @@ jobs:
           SNOWFLAKE_ROLE_PROD: ${{ secrets.SNOWFLAKE_ROLE_PROD }}
           SNOWFLAKE_AUTHENTICATOR_PROD: ${{ secrets.SNOWFLAKE_AUTHENTICATOR_PROD }}
           SNOWFLAKE_PRIVATE_KEY_PROD: ${{ secrets.SNOWFLAKE_PRIVATE_KEY_PROD }}
-
-      - name: Log migration history
-        run: |
-          for file in $(ls changes/${{ github.ref_name }}/*.sql); do
-            python scripts/log_change.py ${{ github.ref_name }} $file SUCCESS
-          done
