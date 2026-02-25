@@ -1,4 +1,4 @@
-CREATE TABLE IF NOT EXISTS ayub_github_audit_db.ayub_github_schema_db.schema_change_history (
+CREATE TABLE IF NOT EXISTS ayub_history_db.ayub_history_schema.schema_change_history (
     id INT AUTOINCREMENT PRIMARY KEY,
     environment STRING NOT NULL,
     change_file STRING NOT NULL,
