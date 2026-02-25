@@ -1,0 +1,7 @@
+snowflake:
+  account: ${SNOWFLAKE_ACCOUNT_QA}
+  user: ${SNOWFLAKE_USER_QA}
+  role: ${SNOWFLAKE_ROLE_QA}
+  warehouse: ${SNOWFLAKE_WAREHOUSE_QA}
+  private_key: ${SNOWFLAKE_PRIVATE_KEY_QA}
+changes_path: changes/qa/

@@ -1,0 +1,7 @@
+snowflake:
+  account: ${SNOWFLAKE_ACCOUNT_PROD}
+  user: ${SNOWFLAKE_USER_PROD}
+  role: ${SNOWFLAKE_ROLE_PROD}
+  warehouse: ${SNOWFLAKE_WAREHOUSE_PROD}
+  private_key: ${SNOWFLAKE_PRIVATE_KEY_PROD}
+changes_path: changes/prod/

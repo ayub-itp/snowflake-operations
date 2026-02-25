@@ -1,0 +1,5 @@
+CREATE TABLE IF NOT EXISTS users (
+    id INT AUTOINCREMENT PRIMARY KEY,
+    name STRING,
+    email STRING
+);
