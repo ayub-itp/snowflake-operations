@@ -8,15 +8,34 @@ def load_private_key(env_key):
     pem_str = os.getenv(f"SNOWFLAKE_PRIVATE_KEY_{env_key}")
     if not pem_str:
         raise ValueError("Private key not set in environment")
-    # Convert string to bytes
     pem_bytes = pem_str.encode("utf-8")
-    # Load RSA key object
     private_key = serialization.load_pem_private_key(
         pem_bytes,
         password=None,
         backend=default_backend()
     )
     return private_key
+
+def run_sql_file(conn, env_key, file_path):
+    cursor = conn.cursor()
+    with open(file_path, 'r') as f:
+        sql = f.read()
+    try:
+        print(f"Applying {file_path}...")
+        cursor.execute(sql)
+        status = "SUCCESS"
+        error_message = None
+    except Exception as e:
+        print(f"Error applying {file_path}: {e}")
+        status = "FAILED"
+        error_message = str(e)
+    finally:
+        cursor.execute(f"""
+            INSERT INTO ayub_github_audit_db.ayub_github_schema_db.schema_change_history
+            (environment, change_file, applied_by, status, error_message)
+            VALUES (%s, %s, CURRENT_USER(), %s, %s)
+        """, (env_key, os.path.basename(file_path), status, error_message))
+        cursor.close()
 
 if __name__ == "__main__":
     env = sys.argv[1].lower()
@@ -34,3 +53,12 @@ if __name__ == "__main__":
         private_key=private_key
     )
     print("✅ Connection established successfully.")
+
+    # Apply all SQL files in changes/<env>/
+    changes_dir = f"changes/{env}/"
+    for file in sorted(os.listdir(changes_dir)):
+        if file.endswith(".sql"):
+            run_sql_file(conn, env_key, os.path.join(changes_dir, file))
+
+    conn.close()
+    print("✅ All migrations applied and logged.")
